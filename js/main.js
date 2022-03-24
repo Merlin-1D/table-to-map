@@ -3,6 +3,7 @@ function initMap() {
         zoom: 7,
         center: { lat: 48.4598343, lng: 31.9950896 },
         streetViewControl: false,
+        mapTypeControl: false,
     });
     // const marker = new google.maps.Marker({
     //     position: uluru,
@@ -102,11 +103,11 @@ function listAddresses() {
     let range = localStorage.getItem('range');
 
     if( spreadsheet_id && range ) {
-
         gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: spreadsheet_id,
             range: range,
         }).then(function(response) {
+            document.getElementById('update-settings').classList.add('d-none')
             document.getElementById('content').innerHTML = '';
             var range = response.result;
             if (range.values.length > 0) {
@@ -121,6 +122,9 @@ function listAddresses() {
         }, function(response) {
             appendPre('Error: ' + response.result.error.message)
         });
+    } else {
+        document.getElementById('update-settings').classList.remove('d-none')
+        document.getElementById('content').innerHTML = '';
     }
 }
 
@@ -144,11 +148,17 @@ function updateSettings() {
 document.getElementById('clear_storage').addEventListener('click', () => {
     localStorage.clear();
     loadSettings();
-    document.getElementById('content').innerHTML = '';
+    listAddresses();
 })
 
 document.addEventListener('DOMContentLoaded', function () {
     loadSettings();
     updateSettings();
     listAddresses();
+})
+
+
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
 })

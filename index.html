@@ -13,24 +13,25 @@
 
 <header class="d-flex justify-content-between fixed-top shadow-sm mb-4">
     <nav class="navbar navbar-light bg-light p-2 w-100">
-        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbarOffcanvasLg" aria-controls="navbarOffcanvasLg">
+        <button class="navbar-toggler d-flex align-items-center gap-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbarOffcanvasLg" aria-controls="navbarOffcanvasLg">
             <span class="navbar-toggler-icon"></span>
+            Налаштування
         </button>
-        <button class="btn btn-primary" id="authorize_button">Authorize</button>
+        <button class="btn btn-primary" id="authorize_button">Увійти</button>
         <div class="offcanvas offcanvas-start" tabindex="-1" id="navbarOffcanvasLg" aria-labelledby="navbarOffcanvasLgLabel">
 
             <div class="d-flex flex-column justify-content-between m-3 h-100">
                 <div id="settings" class="d-flex flex-column gap-2">
-                    <label for="sheet_id" class="form-label mb-0">Spreadsheet Id</label>
+                    <label for="sheet_id" class="form-label mb-0">Ідентифікатор документу таблиці</label>
                     <input type="text" class="form-control" id="sheet_id" name="sheet_id" value="">
 
-                    <label for="range" class="form-label mb-0">Table range (A1 notation)</label>
-                    <input type="text" class="form-control" id="range" name="range" value="">
+                    <label for="range" class="form-label mb-0">Межі таблиці (A1 notation)</label>
+                    <input type="text" class="form-control" id="range" name="range" value="" placeholder="Sheet1!A1:B2">
                 </div>
 
                 <div class="danger-buttons d-flex flex-column gap-2">
-                    <button class="btn btn-outline-danger w-100" id="clear_storage">Clear storage</button>
-                    <button class="btn btn-outline-secondary w-100" id="signout_button" style="display: none;">Sign Out</button>
+                    <button class="btn btn-outline-danger w-100" id="clear_storage" data-bs-toggle="tooltip" title="Це видалить налаштування та всі закешовані данні з обраною таблицею">Видалити данні</button>
+                    <button class="btn btn-outline-secondary w-100" id="signout_button" style="display: none;">Вийти</button>
                 </div>
             </div>
 
@@ -39,12 +40,13 @@
 </header>
 <div class="container-fluid main-wrapper">
     <div class="row">
-        <aside class="col-3">
-            <ul class="list-group overflow-auto h-100" id="content">
-            </ul>
+        <aside class="col-3 list-animated position-relative">
+            <p class="position-absolute d-none" id="update-settings">Оновіть налаштування, щоб побачити список адрес</p>
+            <p class="position-absolute" id="authorize_to_continue">Щоб розпочати необхідно увійти в додаток</p>
+            <ul class="list-group overflow-auto h-100" id="content"></ul>
         </aside>
-        <main class="main col-9 ">
-            <div id="map" class="rounded w-100 h-100"></div>
+        <main class="main col-9 list-animated">
+            <div id="map" class="rounded w-100"></div>
         </main>
     </div>
 </div>

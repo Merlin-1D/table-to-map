@@ -1,6 +1,18 @@
 .main-wrapper {
     padding-top: 80px;
 }
-aside {
+aside, #map {
     height: calc( 100vh - 120px );
+}
+
+.list-collapsed {
+    max-width: 0;
+    padding: 0;
+}
+
+.list-expanded {
+    width: 100%;
+}
+.list-animated {
+    transition: width 5s;
 }
