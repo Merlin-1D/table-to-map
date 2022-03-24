@@ -19,16 +19,19 @@
         <button class="btn btn-primary" id="authorize_button">Authorize</button>
         <div class="offcanvas offcanvas-start" tabindex="-1" id="navbarOffcanvasLg" aria-labelledby="navbarOffcanvasLgLabel">
 
-            <div class="d-flex flex-column justify-content-between m-3">
-                <div id="settings">
-                    <label for="sheet_id" class="form-label">Spreadsheet Id</label>
-                    <input type="text" class="form-control mb-2" id="sheet_id" name="sheet_id" value="">
+            <div class="d-flex flex-column justify-content-between m-3 h-100">
+                <div id="settings" class="d-flex flex-column gap-2">
+                    <label for="sheet_id" class="form-label mb-0">Spreadsheet Id</label>
+                    <input type="text" class="form-control" id="sheet_id" name="sheet_id" value="">
 
-                    <label for="range" class="form-label">Table range (A1 notation)</label>
-                    <input type="text" class="form-control mb-2" id="range" name="range" value="">
+                    <label for="range" class="form-label mb-0">Table range (A1 notation)</label>
+                    <input type="text" class="form-control" id="range" name="range" value="">
                 </div>
 
-                <button class="btn btn-outline-secondary" id="signout_button" style="display: none;">Sign Out</button>
+                <div class="danger-buttons d-flex flex-column gap-2">
+                    <button class="btn btn-outline-danger w-100" id="clear_storage">Clear storage</button>
+                    <button class="btn btn-outline-secondary w-100" id="signout_button" style="display: none;">Sign Out</button>
+                </div>
             </div>
 
         </div>

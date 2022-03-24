@@ -102,10 +102,12 @@ function listAddresses() {
     let range = localStorage.getItem('range');
 
     if( spreadsheet_id && range ) {
+
         gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: spreadsheet_id,
             range: range,
         }).then(function(response) {
+            document.getElementById('content').innerHTML = '';
             var range = response.result;
             if (range.values.length > 0) {
                 for (i = 0; i < range.values.length; i++) {
@@ -134,12 +136,16 @@ function updateSettings() {
     settings.forEach(setting => {
         setting.addEventListener('change',(event) => {
             localStorage.setItem (event.target.name, event.target.value);
-
-
+            listAddresses();
         })
     })
 }
 
+document.getElementById('clear_storage').addEventListener('click', () => {
+    localStorage.clear();
+    loadSettings();
+    document.getElementById('content').innerHTML = '';
+})
 
 document.addEventListener('DOMContentLoaded', function () {
     loadSettings();
