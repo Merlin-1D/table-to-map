@@ -51,7 +51,7 @@ function initClient() {
         authorizeButton.onclick = handleAuthClick;
         signoutButton.onclick = handleSignoutClick;
     }, function(error) {
-        appendPre('Error: ' + error.details);
+        createToast('Error', error.details, false)
     });
 }
 
@@ -60,13 +60,12 @@ function initClient() {
  *  appropriately. After a sign-in, the API is called.
  */
 function updateSigninStatus(isSignedIn) {
+    authorizeButton.classList.toggle('d-none', isSignedIn)
+    signoutButton.classList.toggle('d-none', !isSignedIn)
     if (isSignedIn) {
-        authorizeButton.style.display = 'none';
-        signoutButton.style.display = 'block';
         listAddresses();
     } else {
-        authorizeButton.style.display = 'block';
-        signoutButton.style.display = 'none';
+        createToast('Потребує уваги', 'Щоб розпочати необхідно увійти в додаток', false)
     }
 }
 
@@ -95,6 +94,8 @@ function appendPre(message) {
     var element = document.createElement('li');
     element.className = 'list-group-item text-break';
     element.innerText = message;
+    element.setAttribute('data-bs-toggle', 'modal')
+    element.setAttribute('data-bs-target', '#address_info')
     pre.appendChild(element);
 }
 
@@ -107,23 +108,23 @@ function listAddresses() {
             spreadsheetId: spreadsheet_id,
             range: range,
         }).then(function(response) {
-            document.getElementById('update-settings').classList.add('d-none')
             document.getElementById('content').innerHTML = '';
             var range = response.result;
             if (range.values.length > 0) {
                 for (i = 0; i < range.values.length; i++) {
                     var row = range.values[i];
                     // Print columns A and E, which correspond to indices 0 and 4.
+                    console.log(row)
                     appendPre(row[0]);
                 }
             } else {
-                appendPre('No data found.');
+                createToast('Потребує уваги', 'У вказаній таблиці не знайдено данні. Оберінь іншу таблицю або межі таблиці')
             }
         }, function(response) {
-            appendPre('Error: ' + response.result.error.message)
+            createToast('Error', response.result.error.message, false)
         });
     } else {
-        document.getElementById('update-settings').classList.remove('d-none')
+        createToast('Потребує уваги', 'Оновіть налаштування, щоб побачити список адрес', false)
         document.getElementById('content').innerHTML = '';
     }
 }
@@ -154,11 +155,40 @@ document.getElementById('clear_storage').addEventListener('click', () => {
 document.addEventListener('DOMContentLoaded', function () {
     loadSettings();
     updateSettings();
-    listAddresses();
 })
 
 
 var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
+})
+
+function createToast(header = '', message = '', autoDismiss = true ) {
+    let toastTemplate = document.getElementById('toast_template');
+    toastTemplate.removeAttribute('aria-hidden');
+    toastTemplate.querySelector('strong').innerText = header;
+    toastTemplate.querySelector('.toast-body').innerText = message;
+    if (!autoDismiss) {
+        toastTemplate.setAttribute('data-bs-autohide', 'false');
+    }
+
+    new bootstrap.Toast(toastTemplate).show();
+}
+
+// address info modal
+var exampleModal = document.getElementById('address_info')
+exampleModal.addEventListener('show.bs.modal', function (event) {
+    // // Button that triggered the modal
+    // var button = event.relatedTarget
+    // // Extract info from data-bs-* attributes
+    // var recipient = button.getAttribute('data-bs-whatever')
+    // // If necessary, you could initiate an AJAX request here
+    // // and then do the updating in a callback.
+    // //
+    // // Update the modal's content.
+    // var modalTitle = exampleModal.querySelector('.modal-title')
+    // var modalBodyInput = exampleModal.querySelector('.modal-body input')
+    //
+    // modalTitle.textContent = 'New message to ' + recipient
+    // modalBodyInput.value = recipient
 })
