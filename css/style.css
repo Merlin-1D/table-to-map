@@ -1,0 +1,6 @@
+.main-wrapper {
+    padding-top: 80px;
+}
+aside {
+    height: calc( 100vh - 120px );
+}
