@@ -52,9 +52,19 @@
                     </h2>
                     <div id="filters-collapse" class="accordion-collapse collapse" aria-labelledby="filters" data-bs-parent="#filters-accordion">
                         <div class="accordion-body">
-                            <form>
-                                <label for="number_of_people" class="form-label">Кількість людей, більше ніж:</label>
-                                <input type="number" name="number_of_people" id="number_of_people" class="form-control" min="0" max="10" step="1" value="1">
+                            <form id="filters_form" class="d-flex flex-column gap-2">
+                                <label for="sort-order" class="form-label mb-0">Порядок сортування</label>
+                                <select id="sort-order" name="sort-order" class="form-select">
+                                    <option value="none" selected>Без сортування</option>
+                                    <option value="asc">Спочатку найменші</option>
+                                    <option value="desc">Спочатку найбільші</option>
+                                </select>
+                                <label for="number_of_people" class="form-label mb-0">Кількість людей:</label>
+                                <input type="number" name="number_of_people" id="number_of_people" class="form-control" min="0" max="30" step="1" value="0">
+                                <div class="d-flex flex-wrap gap-2 mt-4">
+                                    <button type="reset" class="btn btn-outline-secondary flex-grow-1 flex-xl-grow-0">Відновити параметри</button>
+                                    <button type="submit" class="btn btn-primary flex-grow-1" data-bs-toggle="collapse" data-bs-target="#filters-collapse" aria-expanded="false" aria-controls="filters-collapse">Застосувати</button>
+                                </div>
                             </form>
                         </div>
                     </div>

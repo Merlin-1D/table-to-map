@@ -89,43 +89,73 @@ function handleSignoutClick(event) {
  *
  * @param {string} message Text to be placed in pre element.
  */
-function appendPre(message) {
-    var pre = document.getElementById('content');
+function appendData(message) {
+    var wrapper = document.getElementById('content');
     var element = document.createElement('li');
     element.className = 'list-group-item text-break';
     element.innerText = message;
     element.setAttribute('data-bs-toggle', 'modal')
     element.setAttribute('data-bs-target', '#address_info')
-    pre.appendChild(element);
+    wrapper.appendChild(element);
 }
 
-function listAddresses() {
+async function listAddresses() {
     let spreadsheet_id = localStorage.getItem('sheet_id');
     let range = localStorage.getItem('range');
 
-    if( spreadsheet_id && range ) {
-        gapi.client.sheets.spreadsheets.values.get({
-            spreadsheetId: spreadsheet_id,
-            range: range,
-        }).then(function(response) {
-            document.getElementById('content').innerHTML = '';
-            var range = response.result;
-            if (range.values.length > 0) {
-                for (i = 0; i < range.values.length; i++) {
-                    var row = range.values[i];
-                    // Print columns A and E, which correspond to indices 0 and 4.
-                    console.log(row)
-                    appendPre(row[0]);
-                }
-            } else {
-                createToast('Потребує уваги', 'У вказаній таблиці не знайдено данні. Оберінь іншу таблицю або межі таблиці')
-            }
-        }, function(response) {
-            createToast('Error', response.result.error.message, false)
-        });
+    if (spreadsheet_id && range) {
+        let values = await getData(spreadsheet_id, range)
+        printData(sortValues(values));
     } else {
         createToast('Потребує уваги', 'Оновіть налаштування, щоб побачити список адрес', false)
         document.getElementById('content').innerHTML = '';
+    }
+}
+
+function sortValues(values) {
+    let order = document.querySelector('[name="sort-order"]').value;
+    let number = document.querySelector('[name="number_of_people"]').value;
+    if (order !== 'null') {
+        values.sort((a, b) => {
+            a = typeof a[6] === 'undefined' ? 0 : a[6];
+            b = typeof b[6] === 'undefined' ? 0 : b[6];
+            if ( order === 'asc') {
+                return a - b;
+            } else {
+                return b - a;
+            }
+        });
+    }
+
+    if( number > 0 ) {
+        values = values.filter(row => row[6] >= number);
+    }
+    return values;
+}
+
+function printData(values) {
+    if (values.length > 0) {
+        document.getElementById('content').innerHTML = '';
+        values.forEach(row => {
+            appendData(row[0] + ' ' + row[6]);
+        })
+    } else {
+        createToast('Потребує уваги', 'У вказаній таблиці не знайдено данні. Оберінь іншу таблицю або межі таблиці')
+    }
+}
+
+async function getData(spreadsheet_id, range) {
+    try {
+        let data = await gapi.client.sheets.spreadsheets.values.get({
+            spreadsheetId: spreadsheet_id,
+            range: range,
+        });
+        // filter rows with undefined data
+        let result = data.result.values.filter(row => typeof row[0] !== 'undefined')
+        return result;
+    } catch (response) {
+        createToast('Error', response.result.error.message, false)
+        console.log(response.result.error)
     }
 }
 
@@ -151,6 +181,11 @@ document.getElementById('clear_storage').addEventListener('click', () => {
     loadSettings();
     listAddresses();
 })
+
+document.getElementById('filters_form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    listAddresses();
+} );
 
 document.addEventListener('DOMContentLoaded', function () {
     loadSettings();
