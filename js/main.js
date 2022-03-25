@@ -1,27 +1,37 @@
 document.addEventListener('DOMContentLoaded', function () {
+    initApp();
+})
+
+function initApp() {
     loadSettings();
     updateSettings();
+    // updateAppStatus();
 
     document.getElementById('clear_storage').addEventListener('click', () => {
         localStorage.clear();
         loadSettings();
-        listAddresses();
+        updateAppStatus();
     })
 
     document.getElementById('invalidate_cache').addEventListener('click', () => {
-        localStorage.removeItem('api_cache');
-        listAddresses();
+        invalidateCache();
+        updateAppStatus();
     })
 
     document.getElementById('filters_form').addEventListener('submit', (e) => {
         e.preventDefault();
-        listAddresses();
+        updateAppStatus();
     } );
-})
+}
 
 
 // display data
+function updateAppStatus() {
+    updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+}
+
 async function listAddresses() {
+
     let spreadsheet_id = getSetting('sheet_id');
     let range = getSetting('range');
 
@@ -38,7 +48,6 @@ function printData(values) {
     if (values.length > 0) {
         document.getElementById('content').innerHTML = '';
         values.forEach(row => {
-            console.log(row)
             appendData(row);
         })
     } else {
@@ -103,6 +112,7 @@ async function getData(spreadsheet_id, range) {
             data = JSON.parse(getSetting('api_cache'));
 
             if ( typeof data !== 'undefined' && data.length > 0) {
+                console.log(data)
                 return data;
             }
         }
@@ -113,10 +123,14 @@ async function getData(spreadsheet_id, range) {
         data = data.result.values.filter(row => typeof row[0] !== 'undefined');
         setSetting('api_cache', JSON.stringify(data))
         return data;
-    } catch (response) {
-        createToast('Error', response.result.error.message, false)
-        console.log(response.result.error)
+    } catch (error) {
+        createToast('Error', error, false)
+        console.log(error)
     }
+}
+
+function invalidateCache() {
+    localStorage.removeItem('api_cache');
 }
 
 // settings
@@ -146,7 +160,8 @@ function updateSettings() {
         setting.addEventListener('change',(event) => {
             let value = event.target.matches('[type="checkbox"]') ? event.target.checked : event.target.value
             setSetting(event.target.name, value);
-            listAddresses();
+            invalidateCache();
+            updateAppStatus();
         })
     })
 }
@@ -225,7 +240,7 @@ function createToast(header = '', message = '', autoDismiss = true) {
         if (isSignedIn) {
             listAddresses();
         } else {
-            createToast('Потребує уваги', 'Щоб розпочати необхідно увійти в додаток', false)
+            createToast('Потребує уваги', 'Щоб переглядати файли необхідно увійти в додаток')
         }
     }
 
