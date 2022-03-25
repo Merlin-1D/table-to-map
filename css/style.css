@@ -15,3 +15,11 @@ aside {
     width: calc( 100% - var(--bs-gutter-x) );
     z-index: 100;
 }
+
+.list-group-item .time {
+    max-width: 75%;
+}
+
+.list-group-item:nth-child(even) {
+    background-color: #f8f9fa;
+}
