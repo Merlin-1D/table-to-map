@@ -83,19 +83,14 @@ function handleSignoutClick(event) {
     gapi.auth2.getAuthInstance().signOut();
 }
 
-/**
- * Append a pre element to the body containing the given message
- * as its text node. Used to display the results of the API call.
- *
- * @param {string} message Text to be placed in pre element.
- */
-function appendData(message) {
-    var wrapper = document.getElementById('content');
-    var element = document.createElement('li');
-    element.className = 'list-group-item text-break';
-    element.innerText = message;
-    element.setAttribute('data-bs-toggle', 'modal')
-    element.setAttribute('data-bs-target', '#address_info')
+function appendData(message='', number='', time='') {
+    let wrapper = document.getElementById('content');
+    let template = document.getElementById('list-group-item')
+    let element  = template.content.cloneNode(true);
+
+    element.querySelector('.message').innerText = message;
+    element.querySelector('.number').innerText = number;
+    element.querySelector('.time').innerText = time;
     wrapper.appendChild(element);
 }
 
@@ -137,7 +132,7 @@ function printData(values) {
     if (values.length > 0) {
         document.getElementById('content').innerHTML = '';
         values.forEach(row => {
-            appendData(row[0] + ' ' + row[6]);
+            appendData(row[0].replace(/[\n\r]/g, " "), row[6], row[7]);
         })
     } else {
         createToast('Потребує уваги', 'У вказаній таблиці не знайдено данні. Оберінь іншу таблицю або межі таблиці')
