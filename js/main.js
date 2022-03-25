@@ -38,6 +38,7 @@ function printData(values) {
     if (values.length > 0) {
         document.getElementById('content').innerHTML = '';
         values.forEach(row => {
+            console.log(row)
             appendData(row);
         })
     } else {
@@ -62,6 +63,7 @@ exampleModal.addEventListener('show.bs.modal', function (event) {
     let row = JSON.parse(event.relatedTarget.getAttribute('data-bs-info'));
     let modal = document.getElementById('address_info');
     let modal_body = modal.querySelector('.modal-body');
+    modal_body.innerHTML = ''
 
     row.forEach( cell => {
         let node = document.createElement('p');
