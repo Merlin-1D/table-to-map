@@ -33,7 +33,13 @@
                     </div>
                     <div class="wrapper">
                         <label for="range" class="form-label">Межі таблиці (A1 notation)</label>
-                        <input type="text" class="form-control" id="range" name="range" value="" placeholder="Sheet1!A1:B2">
+                        <input type="text" class="form-control" id="range" name="range" value="">
+                    </div>
+                    <div class="wrapper">
+                        <div class="form-check form-switch d-flex align-items-center gap-3">
+                            <input class="form-check-input" type="checkbox" role="switch" id="first_row_names" name="first_row_names" checked="checked">
+                            <label class="form-check-label" for="first_row_names">Використовувати перший рядок данних як заголовки</label>
+                        </div>
                     </div>
 
                     <div class="d-flex flex-wrap align-items-center gap-3">
@@ -74,7 +80,7 @@
                          data-bs-parent="#filters-accordion">
                         <div class="accordion-body">
                             <form id="filters_form" class="d-flex flex-column gap-2">
-                                <label for="sort-order" class="form-label mb-0">Порядок сортування кількості людей</label>
+                                <label for="sort-order" class="form-label mb-0">Порядок сортування кількості людей:</label>
                                 <select id="sort-order" name="sort-order" class="form-select">
                                     <option value="none" selected>Без сортування</option>
                                     <option value="asc">Спочатку найменші</option>
@@ -83,6 +89,28 @@
                                 <label for="number_of_people" class="form-label mb-0">Мінімальна кількість людей:</label>
                                 <input type="number" name="number_of_people" id="number_of_people" class="form-control"
                                        min="0" max="30" step="1" value="0">
+
+                                <fieldset>
+                                    <legend class="fs-6">Показувати місця які:</legend>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="radio" checked value="all" name="visibility_setting">
+                                            вільні або зайняті
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label2">
+                                            <input class="form-check-input" type="radio" value="free" name="visibility_setting">
+                                            вільні
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="radio" value="busy" name="visibility_setting">
+                                            зайняті
+                                        </label>
+                                    </div>
+                                </fieldset>
                                 <div class="d-flex flex-wrap gap-2 mt-4">
                                     <button type="reset" class="btn btn-outline-secondary flex-grow-1 flex-xl-grow-0">
                                         Відновити параметри
@@ -103,28 +131,20 @@
             <div id="map" class="rounded w-100"></div>
         </main>
         <div class="toast-container position-fixed bottom-0 end-0 p-3">
-            <div class="toast" id="toast_template" role="alert" aria-live="assertive" aria-atomic="true"
-                 aria-hidden="true">
-                <div class="toast-header">
-                    <svg class="bd-placeholder-img rounded me-2" width="20" height="20"
-                         xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice"
-                         focusable="false">
-                        <rect width="100%" height="100%" fill="#DC3545FF"></rect>
-                    </svg>
-                    <strong class="me-auto"></strong>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body"></div>
-            </div>
         </div>
         <div class="modal" id="address_info" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Детальна інформація</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body p-4">
+                        <dl class="d-grid gap-2"></dl>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-secondary flex-fill" data-bs-dismiss="modal" aria-label="Close">Закрити</button>
+                            <a id="edit_in_table" href="#" target="_blank" class="btn btn-outline-primary flex-fill" data-bs-toggle="tooltip" title="Відкриється у новій вкладці">Редагувати у таблиці</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -133,14 +153,34 @@
     </div>
 </div>
 
+<template id="toast_template">
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <svg class="bd-placeholder-img rounded me-2" width="20" height="20"
+                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice"
+                 focusable="false">
+                <rect width="100%" height="100%" fill="#DC3545FF"></rect>
+            </svg>
+            <strong class="me-auto"></strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body"></div>
+    </div>
+</template>
+
 <template id="list-group-item">
     <li class="list-group-item text-break d-flex flex-column gap-2" data-bs-toggle="modal" data-bs-target="#address_info" data-bs-info="">
         <span class="message">test</span>
         <span class="d-flex border-top">
-            <span class="number mx-auto mt-2">2</span>
+            <span class="number mx-auto mt-2" data-bs-toggle="tooltip" title="">2</span>
             <span class="time border-start w-75 ps-3 mt-2">1 месяц</span>
         </span>
     </li>
+</template>
+
+<template id="modal-body-content">
+    <dt></dt>
+    <dd></dd>
 </template>
 
 

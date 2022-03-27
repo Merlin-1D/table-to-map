@@ -23,3 +23,12 @@ aside {
 .list-group-item:nth-child(even) {
     background-color: #f8f9fa;
 }
+
+.modal-body dl.d-grid {
+    grid-template-columns: repeat(2, minmax(20%, auto));
+}
+
+.modal-body dl.d-grid hr {
+    grid-column-start: 1;
+    grid-column-end: -1;
+}
