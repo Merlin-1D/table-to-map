@@ -118,6 +118,7 @@ async function getData(spreadsheet_id, range) {
             range: range,
         })
         // data = data.result.values.filter(row => typeof row[0] !== 'undefined'); // збивається індекс клітинок
+        data = data.result.values
         if (data.length === 0) {
             createToast('Потребує уваги', 'У вказаній таблиці не знайдено данні. Оберінь іншу таблицю або межі таблиці')
         }
