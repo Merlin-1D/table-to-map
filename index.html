@@ -17,14 +17,14 @@
                 data-bs-target="#navbarOffcanvasLg" aria-controls="navbarOffcanvasLg">
             <span class="navbar-toggler-icon" aria-label="Меню налаштувань"></span>
         </button>
-        <div class="offcanvas offcanvas-start" tabindex="-1" id="navbarOffcanvasLg"
+        <div class="offcanvas offcanvas-start overflow-auto" tabindex="-1" id="navbarOffcanvasLg"
              aria-labelledby="navbarOffcanvasLgLabel">
             <div class="d-flex justify-content-end m-3">
                 <button type="button" class="btn-close btn-lg" aria-label="Close" data-bs-toggle="offcanvas"
                         data-bs-target="#navbarOffcanvasLg" aria-controls="navbarOffcanvasLg"></button>
             </div>
             <div class="d-flex flex-column justify-content-between m-3 my-4 h-100">
-                <div id="settings" class="d-flex flex-column border border-secondary rounded p-3 gap-3">
+                <div id="settings" class="d-flex flex-column border border-secondary rounded p-3 mb-5 gap-3">
 
                     <div class="wrapper">
                         <label for="sheet_id" class="form-label">Ідентифікатор документу таблиці</label>
@@ -35,14 +35,14 @@
                         <input type="text" class="form-control" id="range" name="range" value="">
                     </div>
                     <div class="wrapper">
-                        <div class="form-check form-switch d-flex align-items-center gap-3">
+                        <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" role="switch" id="first_row_names" name="first_row_names" checked="checked">
                             <label class="form-check-label" for="first_row_names">Використовувати перший рядок данних як заголовки</label>
                         </div>
                     </div>
 
                     <div class="d-flex flex-wrap align-items-center gap-3">
-                        <div class="form-check form-switch d-flex align-items-center gap-3" data-bs-toggle="tooltip"
+                        <div class="form-check form-switch" data-bs-toggle="tooltip"
                              title="Данні оновлюються автомутично, якщо отримані більше, ніж 10 хвилин тому. Якщо увімкнути період зменшиться до 2 хвилин. Бажано не вмикати">
                             <input class="form-check-input" type="checkbox" role="switch" id="short_life_cache" name="short_life_cache">
                             <label class="form-check-label" for="short_life_cache">Оновлювати данні таблиці частіше</label>
@@ -53,7 +53,7 @@
                     </div>
                 </div>
 
-                <div class="danger-buttons d-flex flex-column gap-2">
+                <div class="danger-buttons d-flex flex-column gap-2 mb-3">
                     <button class="btn btn-outline-danger w-100" id="clear_storage" data-bs-toggle="tooltip"
                             title="Це видалить налаштування та всі закешовані данні для роботи з таблицею">Видалити кеш та налаштування
                     </button>
@@ -67,7 +67,7 @@
 </header>
 <div class="container-fluid main-wrapper">
     <div class="row">
-        <aside class="col-4 position-relative">
+        <aside class="col-12 col-md-4 position-relative">
             <div class="accordion position-absolute mb-3" id="filters-accordion">
                 <div class="accordion-item border border-secondary shadow">
                     <h2 class="accordion-header" id="filters">
@@ -126,9 +126,11 @@
                     </div>
                 </div>
             </div>
-            <ul class="list-group overflow-auto h-100" id="content"></ul>
+            <div class="h-auto h-md-100 overflow-auto mb-3">
+                <ul class="list-group d-flex flex-nowrap flex-row flex-md-wrap flex-md-column" id="content"></ul>
+            </div>
         </aside>
-        <main class="main col-8">
+        <main class="main col-12 col-md-8">
             <div id="map" class="rounded w-100"></div>
         </main>
         <div class="toast-container position-fixed bottom-0 end-0 p-3">
