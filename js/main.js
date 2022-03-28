@@ -112,7 +112,6 @@ async function getData(spreadsheet_id, range) {
             let raw_data = getSetting('api_cache');
             if (raw_data !== null) {
                 data = JSON.parse(raw_data);
-                console.log(data, raw_data)
                 if (data.length > 0) {
                     return data;
                 }
