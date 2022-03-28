@@ -117,7 +117,6 @@ async function getData(spreadsheet_id, range) {
             spreadsheetId: spreadsheet_id,
             range: range,
         })
-        // data = data.result.values.filter(row => typeof row[0] !== 'undefined'); // збивається індекс клітинок
         data = data.result.values
         if (data.length === 0) {
             createToast('Потребує уваги', 'У вказаній таблиці не знайдено данні. Оберінь іншу таблицю або межі таблиці')
@@ -144,7 +143,7 @@ function invalidateCache() {
 function getSheetLink(index= 0) {
     let range;
     let start = getSetting('range').split(':')[0];
-    index = ( ( getSetting('first_row_names') === 'true' ) ? 1 : 0 ) + parseInt(index) + parseInt(start.match(/\d+/)[0]) + 1;
+    index = ( ( getSetting('first_row_names') === 'true' ) ? 1 : 0 ) + parseInt(index) + parseInt(start.match(/\d+/)[0]);
     range = start[0] + index;
     return 'https://docs.google.com/spreadsheets/d/'+getSetting('sheet_id')+'/edit#gid=0&range=' + range;
 }
@@ -230,9 +229,6 @@ function updateInfoModal() {
 
         row.forEach((cell, index) => {
             let template = document.getElementById('modal-body-content').content.cloneNode(true);
-            if (!names) {
-                template.querySelector('dt').classList.add('d-none')
-            }
             if (index === 11) {
                 modal_body.appendChild(document.createElement('hr'))
             }
