@@ -29,7 +29,8 @@ function initApp() {
 
 // display data
 function updateAppStatus() {
-    updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+    listAddresses();
+    // updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
 }
 
 async function listAddresses() {
@@ -38,7 +39,12 @@ async function listAddresses() {
 
     if (spreadsheet_id && range) {
         let values = await getData(spreadsheet_id, range)
-        printData(sortValues(values));
+        if( values !== null) {
+            printData(sortValues(values));
+        } else {
+            createToast('Не вдалось відкрити таблицю', 'Можливо таблиця закрита, увійдіть в аккаут або повторіть спробу (відкрийте меню та натисніть "Очистити кеш")', false)
+        }
+
     } else {
         createToast('Потребує уваги', 'Оновіть налаштування, щоб побачити список адрес', false)
         document.getElementById('content').innerHTML = '';
@@ -104,7 +110,6 @@ async function getData(spreadsheet_id, range) {
     try {
         if (!always_update) {
             let raw_data = getSetting('api_cache');
-            console.log(raw_data)
             if (raw_data !== null) {
                 data = JSON.parse(raw_data);
                 console.log(data, raw_data)
@@ -130,8 +135,13 @@ async function getData(spreadsheet_id, range) {
         setSetting('api_cache', JSON.stringify(data))
         return data;
     } catch (error) {
-        createToast('Error', error, false)
-        console.log(error)
+        if (error.status === 403) {
+            createToast('Не вдалось відкрити таблицю', 'Ви намагаєтесь отримати доступ до закритого файлу. Щоб переглядати закриті файли необхідно увійти в додаток')
+        } else {
+            createToast('🛑Сталась помилка', 'Якщо проблема не вирішилась сама-собою та перешкоджає роботі напишіть розробнику за яких обставин вона виникає', false)
+            console.log(error)
+        }
+        return null;
     }
 }
 
@@ -293,11 +303,7 @@ function updateInfoModal() {
     function updateSigninStatus(isSignedIn) {
         authorizeButton.classList.toggle('d-none', isSignedIn)
         signoutButton.classList.toggle('d-none', !isSignedIn)
-        if (isSignedIn) {
-            listAddresses();
-        } else {
-            createToast('Потребує уваги', 'Щоб переглядати файли необхідно увійти в додаток')
-        }
+        listAddresses();
     }
 
     /**
