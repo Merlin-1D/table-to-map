@@ -25,7 +25,8 @@ aside {
 }
 
 .modal-body dl.d-grid {
-    grid-template-columns: repeat(2, minmax(20%, auto));
+    grid-template-columns: auto minmax(60%, auto);
+
 }
 
 .modal-body dl.d-grid hr {
