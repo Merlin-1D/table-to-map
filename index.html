@@ -42,12 +42,13 @@
                     </div>
 
                     <div class="d-flex flex-wrap align-items-center gap-3">
-                        <div class="form-check form-switch d-flex align-items-center gap-3">
-                            <input class="form-check-input" type="checkbox" role="switch" id="always_update" name="always_update">
-                            <label class="form-check-label" for="always_update">Оновлювати данні таблиці для кожної операції</label>
+                        <div class="form-check form-switch d-flex align-items-center gap-3" data-bs-toggle="tooltip"
+                             title="Данні оновлюються автомутично, якщо отримані більше, ніж 10 хвилин тому. Якщо увімкнути період зменшиться до 2 хвилин. Бажано не вмикати">
+                            <input class="form-check-input" type="checkbox" role="switch" id="short_life_cache" name="short_life_cache">
+                            <label class="form-check-label" for="short_life_cache">Оновлювати данні таблиці частіше</label>
                         </div>
                         <button class="btn btn btn-outline-secondary w-100" id="invalidate_cache" data-bs-toggle="tooltip"
-                                title="Це видалить закешовані данні для роботи з таблицею">Очистити кеш
+                                title="Це видалить закешовані данні для роботи з таблицею">Оновити кеш
                         </button>
                     </div>
                 </div>

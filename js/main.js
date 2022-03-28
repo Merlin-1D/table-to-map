@@ -29,6 +29,7 @@ function initApp() {
 
 // display data
 function updateAppStatus() {
+    console.log('▶️ Update request')
     listAddresses();
     // updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
 }
@@ -42,7 +43,7 @@ async function listAddresses() {
         if( values !== null) {
             printData(sortValues(values));
         } else {
-            createToast('Не вдалось відкрити таблицю', 'Можливо таблиця закрита, увійдіть в аккаут або повторіть спробу (відкрийте меню та натисніть "Очистити кеш")', false)
+            createToast('Не вдалось відкрити таблицю', 'Можливо таблиця закрита, увійдіть в аккаут або повторіть спробу (відкрийте меню та натисніть "Оновити кеш кеш")', false)
         }
 
     } else {
@@ -108,31 +109,14 @@ async function getData(spreadsheet_id, range) {
     let data;
 
     try {
-        if (!always_update) {
-            let raw_data = getSetting('api_cache');
-            if (raw_data !== null) {
-                data = JSON.parse(raw_data);
-                if (data.length > 0) {
-                    return data;
-                }
-            }
-        }
-        data = await gapi.client.sheets.spreadsheets.values.get({
-            spreadsheetId: spreadsheet_id,
-            range: range,
-        })
-        data = data.result.values
-        if (data.length === 0) {
-            createToast('Потребує уваги', 'У вказаній таблиці не знайдено данні. Оберінь іншу таблицю або межі таблиці')
-        }
-        if (getSetting('first_row_names') === 'true') {
-            setSetting('names_row', JSON.stringify(data[0]))
-            delete data[0]
+        // try to get from cache
+        data = getFromCache();
+        if (data) {
+            return data
+        } else {
+            return await getDataFromAPI(spreadsheet_id, range);
         }
 
-        data = data.filter(row => row !== null)
-        setSetting('api_cache', JSON.stringify(data))
-        return data;
     } catch (error) {
         if (error.status === 403) {
             createToast('Не вдалось відкрити таблицю', 'Ви намагаєтесь отримати доступ до закритого файлу. Щоб переглядати закриті файли необхідно увійти в додаток')
@@ -144,15 +128,68 @@ async function getData(spreadsheet_id, range) {
     }
 }
 
+function getFromCache() {
+    const MILLISECONDS_TO_MINUTES = 1000*60;
+    let savedTime = parseFloat(getSetting('cached_time'));
+    let now = Date.now();
+    let invalidateTime = (getSetting('short_life_cache') === 'true') ? 2 : 10; // minutes
+
+    let isOutdated = isNaN(savedTime) ? true : Math.floor((now - savedTime)/MILLISECONDS_TO_MINUTES ) > invalidateTime;
+    let raw_data = getSetting('api_cache');
+
+    if ( !isOutdated ) {
+        if (raw_data !== null) {
+            let data = JSON.parse(raw_data);
+            if (data.length > 0) {
+                console.log('⏳ Cache not outdated and have data')
+                return data;
+            }
+        }
+        console.log('📭 No data in cache')
+    } else {
+        console.log('⌛️ Cache is outdated')
+    }
+
+    // if we get here that mean cache don't have data
+    invalidateCache();
+    return false
+}
+
+function saveToCache(data) {
+    if (getSetting('first_row_names') === 'true') {
+        setSetting('names_row', JSON.stringify(data[0]))
+        delete data[0]
+    }
+
+    data = data.filter(row => row !== null)
+    setSetting('api_cache', JSON.stringify(data))
+    setSetting('cached_time', Date.now())
+    console.log('💾 Cache updated!')
+}
+
 function invalidateCache() {
     localStorage.removeItem('api_cache');
     localStorage.removeItem('names_row');
+    console.log('🗑️ Delete cache')
+}
+
+async function getDataFromAPI(spreadsheet_id, range) {
+    let data = await gapi.client.sheets.spreadsheets.values.get({
+        spreadsheetId: spreadsheet_id,
+        range: range,
+    })
+    data = data.result.values
+    if (data.length === 0) {
+        createToast('Потребує уваги', 'У вказаній таблиці не знайдено данні. Оберінь іншу таблицю або змініть межі таблиці')
+    }
+    saveToCache(data)
+    return data;
 }
 
 function getSheetLink(index= 0) {
     let range;
     let start = getSetting('range').split(':')[0];
-    index = ( ( getSetting('first_row_names') === 'true' ) ? 1 : 0 ) + parseInt(index) + parseInt(start.match(/\d+/)[0]);
+    index = ( ( getSetting('first_row_names') === 'true' ) ? 1 : 0 ) + parseFloat(index) + parseFloat(start.match(/\d+/)[0]);
     range = start[0] + index;
     return 'https://docs.google.com/spreadsheets/d/'+getSetting('sheet_id')+'/edit#gid=0&range=' + range;
 }
@@ -269,7 +306,7 @@ function updateInfoModal() {
      */
     function handleClientLoad() {
         gapi.load('client:auth2', initClient);
-        console.log('📌 Client init')
+        console.log('📌 Google API client init')
     }
 
     /**
@@ -292,6 +329,7 @@ function updateInfoModal() {
             signoutButton.onclick = handleSignoutClick;
         }, function (error) {
             createToast('Error', error.details, false)
+            console.log(error)
         });
     }
 
