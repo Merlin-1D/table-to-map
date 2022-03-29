@@ -244,7 +244,7 @@ function appendData(row, range = '') {
     element.querySelector('.message').innerText = row[0].replace(/[\n\r]/g, " ").slice(0,30);
     element.querySelector('.number').innerText = (typeof row[12] !== 'undefined') ? (row[12] + '/' + row[6]) : row[6];
     element.querySelector('.number').title = (typeof row[12] !== 'undefined') ? (row[12] + ' зайнятих місць з ' + row[6]) : row[6] + ' місць вільно';
-    element.querySelector('.time').innerText = row[7].slice(0,20);
+    element.querySelector('.time').innerText = (typeof row[7] !== 'undefined') ? row[7].slice(0,20) : '';
     new bootstrap.Tooltip(element.querySelector('.number'))
     wrapper.appendChild(element);
 }
