@@ -89,7 +89,9 @@ function updateFilterData(data, select) {
     // clear options
     select.querySelectorAll('option:not(.dont_remove)').forEach(option => option.remove())
 
-    data = data.map( row => row[row_index])
+    data = data.map( row => {
+        return row[row_index]
+    })
     data = [...new Set(data)]
     data.forEach(item => {
         select.add(new Option(item, item));
@@ -270,7 +272,7 @@ function updateSettings() {
             setSetting(event.target.name, value);
             console.log('🔧 Settings updated')
             invalidateCache();
-            updateAppStatus();
+            updateAppStatus(true);
         })
     })
 }
