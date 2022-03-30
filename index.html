@@ -5,6 +5,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="robots" content="noindex">
+    <link rel="icon" type="image/png" href="icon-map.png">
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -23,11 +24,11 @@
                 <button type="button" class="btn-close btn-lg" aria-label="Close" data-bs-toggle="offcanvas"
                         data-bs-target="#navbarOffcanvasLg" aria-controls="navbarOffcanvasLg"></button>
             </div>
-            <div class="d-flex flex-column justify-content-between p-3 py-4 h-100">
+            <div class="d-flex flex-column p-3 py-4 h-100">
                 <div id="settings" class="d-flex flex-column border border-secondary rounded p-3 mb-5 gap-3">
 
                     <div class="wrapper">
-                        <label for="sheet_id" class="form-label">Ідентифікатор документу таблиці</label>
+                        <label for="sheet_id" class="form-label">Посилання на таблицю</label>
                         <input type="text" class="form-control" id="sheet_id" name="sheet_id" value="">
                     </div>
                     <div class="wrapper">
@@ -53,7 +54,7 @@
                     </div>
                 </div>
 
-                <div class="danger-buttons d-flex flex-column gap-2">
+                <div class="danger-buttons d-flex flex-column gap-2 mt-auto">
                     <button class="btn btn-outline-danger w-100" id="clear_storage" data-bs-toggle="tooltip"
                             title="Це видалить налаштування та всі закешовані данні для роботи з таблицею">Видалити кеш та налаштування
                     </button>
@@ -81,15 +82,26 @@
                          data-bs-parent="#filters-accordion">
                         <div class="accordion-body">
                             <form id="filters_form" class="d-flex flex-column gap-2">
+                                <label for="settlement" class="form-label mb-0">Населений пункт:</label>
+                                <select id="settlement" name="settlement" class="form-select fill_from_data" data-column-index="3">
+                                    <option value="all" selected class="dont_remove">Всі</option>
+                                </select>
+
                                 <label for="sort-order" class="form-label mb-0">Порядок сортування кількості людей:</label>
                                 <select id="sort-order" name="sort-order" class="form-select">
-                                    <option value="none" selected>Без сортування</option>
+                                    <option value="all" selected>Без сортування</option>
                                     <option value="asc">Спочатку найменші</option>
                                     <option value="desc">Спочатку найбільші</option>
                                 </select>
+
                                 <label for="number_of_people" class="form-label mb-0">Мінімальна кількість людей:</label>
                                 <input type="number" name="number_of_people" id="number_of_people" class="form-control"
                                        min="0" max="30" step="1" value="0">
+
+                                <label for="time_of_residential" class="form-label mb-0">Можливий час проживання</label>
+                                <select id="time_of_residential" name="time_of_residential" class="form-select fill_from_data" data-column-index="7">
+                                    <option value="all" selected class="dont_remove">Всі</option>
+                                </select>
 
                                 <fieldset>
                                     <legend class="fs-6">Показувати місця які:</legend>
@@ -112,6 +124,7 @@
                                         </label>
                                     </div>
                                 </fieldset>
+
                                 <div class="d-flex flex-wrap gap-2 mt-4">
                                     <button type="reset" class="btn btn-outline-secondary flex-grow-1 flex-xl-grow-0">
                                         Відновити параметри
@@ -155,6 +168,11 @@
 
     </div>
 </div>
+<div class="container-fluid my-2">
+    <div class="d-flex justify-content-end">
+        <a href="https://www.flaticon.com/ru/free-icons/" class="link-secondary fs-6" title="Иконка карты" target="_blank" rel="nofollow">Иконка карты от Vectors Market - Flaticon</a>
+    </div>
+</div>
 
 <template id="toast_template">
     <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
@@ -194,4 +212,4 @@
 <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()"></script>
 <!--<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrkwkW9RqB3Im8mWYrf-spDX3YP9PGQHE&callback=initMap"></script>-->
 </body>
-</html>
+<
