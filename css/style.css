@@ -20,6 +20,10 @@
     margin-top: 70px;
 }
 
+.list-group-item {
+    cursor: pointer;
+}
+
 .list-group-item .time {
     max-width: 75%;
 }
