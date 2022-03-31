@@ -9,7 +9,7 @@
 }
 
 #map {
-    background: linear-gradient( -30deg, khaki, bisque);
+    background: linear-gradient(-30deg, #283048, #859398);
     height: calc( 100vh - 120px );
 }
 #filters-accordion {
